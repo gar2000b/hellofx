@@ -18,6 +18,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ScrollableBoxesApp extends Application {
@@ -29,6 +30,22 @@ public class ScrollableBoxesApp extends Application {
     // Define the blue color for the boxes
     private static final Color BOX_COLOR = Color.web("#4A90E2");
     StackPane dragIndicatorStackPane;
+
+    private static final String DEFAULT_COMPONENT = "Default Component";
+    private static final String BEGIN_COMPONENT = "Begin Component";
+    private static final String END_COMPONENT = "End Component";
+    private static final String EVOLUTIONARY_SEARCH_COMPONENT = "Evolutionary Search Component";
+
+    private static final Set<String> VALID_COMPONENTS = Set.of(
+    BEGIN_COMPONENT,
+    END_COMPONENT,
+    EVOLUTIONARY_SEARCH_COMPONENT
+    );
+
+    private static final Color DEFAULT_COMPONENT_COLOUR = Color.web("#4A90E2");
+    private static final Color BEGIN_COMPONENT_COLOUR = Color.web("#A9A9A9");
+    private static final Color END_COMPONENT_COLOUR = Color.web("#808080");
+    private static final Color EVOLUTIONARY_SEARCH_COMPONENT_COLOUR = Color.web("#F44336");
 
     @Override
     public void start(Stage primaryStage) {
@@ -87,97 +104,13 @@ public class ScrollableBoxesApp extends Application {
         beginComponentBoxPane.setOnDragDetected(event -> {
             var db = beginComponentBoxPane.startDragAndDrop(TransferMode.COPY);
             var content = new javafx.scene.input.ClipboardContent();
-            content.putString("Begin");
+            content.putString(BEGIN_COMPONENT);
             db.setContent(content);
             event.consume();
         });
 
         beginComponentBoxPane.setOnDragDone(event -> {
             beginComponentBoxPane.setStyle(""); // Ensure border is reset
-            event.consume();
-        });
-
-        AtomicBoolean indicatorAdded = new AtomicBoolean(false);
-
-        scrollPane.setOnDragOver(event -> {
-            if (event.getGestureSource() != boxContainer && event.getDragboard().hasString()) {
-                event.acceptTransferModes(TransferMode.COPY);
-            }
-
-            for (int i = 0; i < boxContainer.getChildren().size(); i++) {
-                if (boxContainer.getChildren().get(i) instanceof VBox vBox) {
-                    // Check if the mouse is above the first box
-                    if (i == 0 && vBox.localToScene(vBox.getBoundsInLocal()).getMinY() > event.getSceneY()) {
-                        boxContainer.getChildren().remove(dragIndicatorStackPane);
-                        boxContainer.getChildren().add(0, dragIndicatorStackPane); // Add at the very top
-                        indicatorAdded.set(true);
-                        break;
-                    }
-
-                    // Check if the mouse is over this VBox
-                    if (vBox.localToScene(vBox.getBoundsInLocal()).contains(event.getSceneX(), event.getSceneY())) {
-                        boxContainer.getChildren().remove(dragIndicatorStackPane);
-                        if (i + 1 <= boxContainer.getChildren().size()) {
-                            boxContainer.getChildren().add(i + 1, dragIndicatorStackPane);
-                        } else {
-                            boxContainer.getChildren().add(dragIndicatorStackPane);
-                        }
-                        indicatorAdded.set(true);
-                        break;
-                    }
-                }
-            }
-
-            // Fallback: Add the drag indicator at the very bottom when no VBox is hovered
-            if (!indicatorAdded.get()) {
-                boxContainer.getChildren().remove(dragIndicatorStackPane);
-                boxContainer.getChildren().add(dragIndicatorStackPane); // Add at the bottom
-            }
-
-            // Ensure the indicator is visible
-            dragIndicator.setVisible(true);
-
-            // Auto-scroll logic
-            double viewportHeight = scrollPane.getViewportBounds().getHeight();
-            double contentHeight = scrollPane.getContent().getBoundsInLocal().getHeight();
-            double yPos = event.getY();
-
-            // Scroll down if dragging near the bottom
-            if (yPos > scrollPane.getLayoutY() + viewportHeight - 40) {
-                double newVValue = Math.min(1.0, scrollPane.getVvalue() + 0.02);
-                scrollPane.setVvalue(newVValue);
-            }
-
-            // Scroll up if dragging near the top
-            if (yPos < scrollPane.getLayoutY() + 10) {
-                double newVValue = Math.max(0.0, scrollPane.getVvalue() - 0.02);
-                scrollPane.setVvalue(newVValue);
-            }
-
-            event.consume();
-        });
-
-        scrollPane.setOnDragExited(event -> {
-            // Hide the drag indicator when dragging exits the scroll pane
-            dragIndicator.setVisible(false);
-            event.consume();
-        });
-
-        scrollPane.setOnDragDropped(event -> {
-            if (event.getDragboard().hasString()) {
-                // Get the current position of the dragIndicator
-                int indicatorIndex = boxContainer.getChildren().indexOf(dragIndicatorStackPane);
-
-                // Add a new box at the appropriate position
-                addBox(indicatorIndex);
-
-                // Reset styles and visibility
-                beginComponentBoxPane.setStyle(""); // Reset the border
-                dragIndicator.setVisible(false); // Hide the drag indicator
-                event.setDropCompleted(true);
-            } else {
-                event.setDropCompleted(false);
-            }
             event.consume();
         });
 
@@ -199,6 +132,27 @@ public class ScrollableBoxesApp extends Application {
         Tooltip endComponentToolTip = new Tooltip("End Component");
         Tooltip.install(endComponentBoxPane, endComponentToolTip);
         endComponentToolTip.setShowDelay(Duration.millis(100));
+
+        endComponentBoxPane.setOnMousePressed(event -> {
+            endComponentBoxPane.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        endComponentBoxPane.setOnMouseReleased(event -> {
+            endComponentBoxPane.setStyle(""); // Reset the border
+        });
+
+        endComponentBoxPane.setOnDragDetected(event -> {
+            var db = endComponentBoxPane.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(END_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        endComponentBoxPane.setOnDragDone(event -> {
+            endComponentBoxPane.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
 
         // Create a Data Load Component box
         Rectangle dataLoadComponentBox1 = new Rectangle(150, 50, Color.web("#8BC34A"));
@@ -351,6 +305,126 @@ public class ScrollableBoxesApp extends Application {
         Tooltip.install(geneticAlgorithmComponentBoxPane, geneticAlgorithmComponentToolTip);
         geneticAlgorithmComponentToolTip.setShowDelay(Duration.millis(100));
 
+        geneticAlgorithmComponentBoxPane.setOnMousePressed(event -> {
+            geneticAlgorithmComponentBoxPane.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        geneticAlgorithmComponentBoxPane.setOnMouseReleased(event -> {
+            geneticAlgorithmComponentBoxPane.setStyle(""); // Reset the border
+        });
+
+        geneticAlgorithmComponentBoxPane.setOnDragDetected(event -> {
+            var db = geneticAlgorithmComponentBoxPane.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(EVOLUTIONARY_SEARCH_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        geneticAlgorithmComponentBoxPane.setOnDragDone(event -> {
+            geneticAlgorithmComponentBoxPane.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
+
+        /**
+         * Logic for when components are dragged on to the scrollPane/boxContainer
+         */
+        AtomicBoolean indicatorAdded = new AtomicBoolean(false);
+
+        scrollPane.setOnDragOver(event -> {
+            if (!VALID_COMPONENTS.contains(event.getDragboard().getString())) {
+                return;
+            }
+
+            if (event.getGestureSource() != boxContainer && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.COPY);
+            }
+
+            for (int i = 0; i < boxContainer.getChildren().size(); i++) {
+                if (boxContainer.getChildren().get(i) instanceof VBox vBox) {
+                    // Check if the mouse is above the first box
+                    if (i == 0 && vBox.localToScene(vBox.getBoundsInLocal()).getMinY() > event.getSceneY()) {
+                        boxContainer.getChildren().remove(dragIndicatorStackPane);
+                        boxContainer.getChildren().add(0, dragIndicatorStackPane); // Add at the very top
+                        indicatorAdded.set(true);
+                        break;
+                    }
+
+                    // Check if the mouse is over this VBox
+                    if (vBox.localToScene(vBox.getBoundsInLocal()).contains(event.getSceneX(), event.getSceneY())) {
+                        boxContainer.getChildren().remove(dragIndicatorStackPane);
+                        if (i + 1 <= boxContainer.getChildren().size()) {
+                            boxContainer.getChildren().add(i + 1, dragIndicatorStackPane);
+                        } else {
+                            boxContainer.getChildren().add(dragIndicatorStackPane);
+                        }
+                        indicatorAdded.set(true);
+                        break;
+                    }
+                }
+            }
+
+            // Fallback: Add the drag indicator at the very bottom when no VBox is hovered
+            if (!indicatorAdded.get()) {
+                boxContainer.getChildren().remove(dragIndicatorStackPane);
+                boxContainer.getChildren().add(dragIndicatorStackPane); // Add at the bottom
+            }
+
+            // Ensure the indicator is visible
+            dragIndicator.setVisible(true);
+
+            // Auto-scroll logic
+            double viewportHeight = scrollPane.getViewportBounds().getHeight();
+            double contentHeight = scrollPane.getContent().getBoundsInLocal().getHeight();
+            double yPos = event.getY();
+
+            // Scroll down if dragging near the bottom
+            if (yPos > scrollPane.getLayoutY() + viewportHeight - 40) {
+                double newVValue = Math.min(1.0, scrollPane.getVvalue() + 0.02);
+                scrollPane.setVvalue(newVValue);
+            }
+
+            // Scroll up if dragging near the top
+            if (yPos < scrollPane.getLayoutY() + 10) {
+                double newVValue = Math.max(0.0, scrollPane.getVvalue() - 0.02);
+                scrollPane.setVvalue(newVValue);
+            }
+
+            event.consume();
+        });
+
+        scrollPane.setOnDragExited(event -> {
+            if (!VALID_COMPONENTS.contains(event.getDragboard().getString())) {
+                return;
+            }
+
+            // Hide the drag indicator when dragging exits the scroll pane
+            dragIndicator.setVisible(false);
+            event.consume();
+        });
+
+        scrollPane.setOnDragDropped(event -> {
+            if (!VALID_COMPONENTS.contains(event.getDragboard().getString())) {
+                return;
+            }
+
+            if (event.getDragboard().hasString()) {
+                // Get the current position of the dragIndicator
+                int indicatorIndex = boxContainer.getChildren().indexOf(dragIndicatorStackPane);
+
+                // Add a new box at the appropriate position
+                addComponentInstance(indicatorIndex, event.getDragboard().getString());
+
+                // Reset styles and visibility
+                beginComponentBoxPane.setStyle(""); // Reset the border
+                dragIndicator.setVisible(false); // Hide the drag indicator
+                event.setDropCompleted(true);
+            } else {
+                event.setDropCompleted(false);
+            }
+            event.consume();
+        });
+
         Button addAboveButton = new Button("Above");
         Button addBelowButton = new Button("Below");
         Button clearButton = new Button("Clear");
@@ -377,9 +451,9 @@ public class ScrollableBoxesApp extends Application {
         HBox.setHgrow(scrollPane, Priority.ALWAYS); // Let the scroll area expand to fill space
 
         // Add event handlers for buttons
-        addAboveButton.setOnAction(e -> addBoxAbove());
-        addBelowButton.setOnAction(e -> addBoxBelow());
-        clearButton.setOnAction(e -> clearBoxes());
+        addAboveButton.setOnAction(e -> addComponentInstanceAbove());
+        addBelowButton.setOnAction(e -> addComponentInstanceBelow());
+        clearButton.setOnAction(e -> clearComponentInstances());
 
         // Scene and stage
         Scene scene = new Scene(mainLayout, 800, 800, Color.web("#2E2E2E")); // Set scene background to gray
@@ -389,45 +463,57 @@ public class ScrollableBoxesApp extends Application {
         primaryStage.show();
     }
 
-    private void addBox(int position) {
-        VBox newBox = createBox();
+    private void addComponentInstance(int position, String componentType) {
+        VBox componentInstance = createComponentInstance(componentType);
         if (position >= 0 && position <= boxContainer.getChildren().size()) {
-            boxContainer.getChildren().add(position, newBox); // Add at the specified position
+            boxContainer.getChildren().add(position, componentInstance); // Add at the specified position
         } else {
-            boxContainer.getChildren().add(newBox); // Fallback to adding at the end
+            boxContainer.getChildren().add(componentInstance); // Fallback to adding at the end
         }
     }
 
-    private void addBoxAbove() {
-        boxContainer.getChildren().add(0, createBox());
+    private void addComponentInstanceAbove() {
+        boxContainer.getChildren().add(0, createComponentInstance(DEFAULT_COMPONENT));
     }
 
-    private void addBoxBelow() {
-        boxContainer.getChildren().add(createBox());
+    private void addComponentInstanceBelow() {
+        boxContainer.getChildren().add(createComponentInstance(DEFAULT_COMPONENT));
     }
 
-    private void clearBoxes() {
+    private void clearComponentInstances() {
         boxContainer.getChildren().clear();
         boxCount = 0; // Reset box counter
         boxContainer.getChildren().add(0, dragIndicatorStackPane);
     }
 
-    private VBox createBox() {
+    private VBox createComponentInstance(String componentType) {
         int currentBoxNumber = ++boxCount; // Capture the current box number
 
+        Rectangle componentInstance = null;
         // Create the box
-        Rectangle box = new Rectangle(500, 150, BOX_COLOR); // Wider fixed size
-        box.setArcWidth(10);
-        box.setArcHeight(10); // Rounded corners for aesthetics
-        box.setStroke(Color.BLACK); // Add black border
-        box.setStrokeWidth(1); // Set border thickness to 1 pixel
+        if (componentType.equals(DEFAULT_COMPONENT)) {
+            componentInstance = new Rectangle(500, 150, DEFAULT_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(BEGIN_COMPONENT)) {
+            componentInstance = new Rectangle(200, 70, BEGIN_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(END_COMPONENT)) {
+            componentInstance = new Rectangle(200, 70, END_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(EVOLUTIONARY_SEARCH_COMPONENT)) {
+            componentInstance = new Rectangle(500, 150, EVOLUTIONARY_SEARCH_COMPONENT_COLOUR); // Wider fixed size
+        }
+        componentInstance.setArcWidth(10);
+        componentInstance.setArcHeight(10); // Rounded corners for aesthetics
+        componentInstance.setStroke(Color.BLACK); // Add black border
+        componentInstance.setStrokeWidth(1); // Set border thickness to 1 pixel
 
         // Add a number label in the middle of the box
         Text numberText = new Text(String.valueOf(currentBoxNumber));
         numberText.setFill(Color.WHITE);
 
         // Create a StackPane to combine the box and the text
-        StackPane boxPane = new StackPane(box, numberText);
+        StackPane boxPane = new StackPane(componentInstance, numberText);
         boxPane.setAlignment(Pos.CENTER);
 
         // Add click event to display box number
