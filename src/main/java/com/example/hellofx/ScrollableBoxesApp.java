@@ -191,6 +191,27 @@ public class ScrollableBoxesApp extends Application {
         Tooltip.install(dataLoadComponentBoxPane1, dataLoadComponentToolTip);
         dataLoadComponentToolTip.setShowDelay(Duration.millis(100));
 
+        dataLoadComponentBoxPane1.setOnMousePressed(event -> {
+            dataLoadComponentBoxPane1.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        dataLoadComponentBoxPane1.setOnMouseReleased(event -> {
+            dataLoadComponentBoxPane1.setStyle(""); // Reset the border
+        });
+
+        dataLoadComponentBoxPane1.setOnDragDetected(event -> {
+            var db = dataLoadComponentBoxPane1.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(DATA_LOAD_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        dataLoadComponentBoxPane1.setOnDragDone(event -> {
+            dataLoadComponentBoxPane1.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
+
         // Create a Generic Wrapper Component box
         Rectangle genericWrapperComponentBox1 = new Rectangle(150, 50, Color.web("#FF9800"));
         genericWrapperComponentBox1.setArcWidth(10); // Rounded corners
@@ -210,6 +231,27 @@ public class ScrollableBoxesApp extends Application {
         Tooltip.install(genericWrapperComponentBoxPane1, genericWrapperComponentToolTip);
         genericWrapperComponentToolTip.setShowDelay(Duration.millis(100));
 
+        genericWrapperComponentBoxPane1.setOnMousePressed(event -> {
+            genericWrapperComponentBoxPane1.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        genericWrapperComponentBoxPane1.setOnMouseReleased(event -> {
+            genericWrapperComponentBoxPane1.setStyle(""); // Reset the border
+        });
+
+        genericWrapperComponentBoxPane1.setOnDragDetected(event -> {
+            var db = genericWrapperComponentBoxPane1.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(GENERIC_WRAPPER_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        genericWrapperComponentBoxPane1.setOnDragDone(event -> {
+            genericWrapperComponentBoxPane1.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
+
         // Create a Signals Wrapper Component box
         Rectangle signalsWrapperComponentBox1 = new Rectangle(150, 50, Color.web("#4A90E2"));
         signalsWrapperComponentBox1.setArcWidth(10); // Rounded corners
@@ -228,6 +270,27 @@ public class ScrollableBoxesApp extends Application {
         Tooltip signalsWrapperComponentToolTip = new Tooltip("Signals Wrapper Component");
         Tooltip.install(signalsWrapperComponentBoxPane1, signalsWrapperComponentToolTip);
         signalsWrapperComponentToolTip.setShowDelay(Duration.millis(100));
+
+        signalsWrapperComponentBoxPane1.setOnMousePressed(event -> {
+            signalsWrapperComponentBoxPane1.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        signalsWrapperComponentBoxPane1.setOnMouseReleased(event -> {
+            signalsWrapperComponentBoxPane1.setStyle(""); // Reset the border
+        });
+
+        signalsWrapperComponentBoxPane1.setOnDragDetected(event -> {
+            var db = signalsWrapperComponentBoxPane1.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(SIGNALS_WRAPPER_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        signalsWrapperComponentBoxPane1.setOnDragDone(event -> {
+            signalsWrapperComponentBoxPane1.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
 
         // Create a Signal Generation Component box
         Rectangle signalGenerationComponentBox1 = new Rectangle(150, 50, Color.web("#5AA7FF"));
@@ -591,57 +654,71 @@ public class ScrollableBoxesApp extends Application {
     private VBox createComponentInstance(String componentType) {
         int currentBoxNumber = ++boxCount; // Capture the current box number
 
-        Rectangle componentInstance = null;
+        Rectangle componentBoundary = null;
         // Create the box
         if (componentType.equals(DEFAULT_COMPONENT)) {
-            componentInstance = new Rectangle(500, 150, DEFAULT_COMPONENT_COLOUR); // Wider fixed size
+            componentBoundary = new Rectangle(500, 150, DEFAULT_COMPONENT_COLOUR); // Wider fixed size
         }
         if (componentType.equals(BEGIN_COMPONENT)) {
-            componentInstance = new Rectangle(200, 70, BEGIN_COMPONENT_COLOUR); // Wider fixed size
+            componentBoundary = new Rectangle(200, 70, BEGIN_COMPONENT_COLOUR); // Wider fixed size
         }
         if (componentType.equals(END_COMPONENT)) {
-            componentInstance = new Rectangle(200, 70, END_COMPONENT_COLOUR); // Wider fixed size
+            componentBoundary = new Rectangle(200, 70, END_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(DATA_LOAD_COMPONENT)) {
+            componentBoundary = new Rectangle(500, 150, DATA_LOAD_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(GENERIC_WRAPPER_COMPONENT)) {
+            componentBoundary = new Rectangle(500, 150, GENERIC_WRAPPER_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(SIGNALS_WRAPPER_COMPONENT)) {
+            componentBoundary = new Rectangle(500, 150, SIGNALS_WRAPPER_COMPONENT_COLOUR); // Wider fixed size
         }
         if (componentType.equals(SIGNAL_GENERATION_COMPONENT)) {
-            componentInstance = new Rectangle(500, 150, SIGNAL_GENERATION_COMPONENT_COLOUR); // Wider fixed size
+            componentBoundary = new Rectangle(500, 150, SIGNAL_GENERATION_COMPONENT_COLOUR); // Wider fixed size
         }
         if (componentType.equals(STANDARD_COMPONENT)) {
-            componentInstance = new Rectangle(500, 150, STANDARD_COMPONENT_COLOUR); // Wider fixed size
+            componentBoundary = new Rectangle(500, 150, STANDARD_COMPONENT_COLOUR); // Wider fixed size
         }
         if (componentType.equals(CODE_BLOCK_COMPONENT)) {
-            componentInstance = new Rectangle(500, 150, CODE_BLOCK_COMPONENT_COLOUR); // Wider fixed size
+            componentBoundary = new Rectangle(500, 150, CODE_BLOCK_COMPONENT_COLOUR); // Wider fixed size
         }
         if (componentType.equals(EVOLUTIONARY_SEARCH_COMPONENT)) {
-            componentInstance = new Rectangle(500, 150, EVOLUTIONARY_SEARCH_COMPONENT_COLOUR); // Wider fixed size
+            componentBoundary = new Rectangle(500, 150, EVOLUTIONARY_SEARCH_COMPONENT_COLOUR); // Wider fixed size
         }
-        componentInstance.setArcWidth(10);
-        componentInstance.setArcHeight(10); // Rounded corners for aesthetics
-        componentInstance.setStroke(Color.BLACK); // Add black border
-        componentInstance.setStrokeWidth(1); // Set border thickness to 1 pixel
+        componentBoundary.setArcWidth(10);
+        componentBoundary.setArcHeight(10); // Rounded corners for aesthetics
+        componentBoundary.setStroke(Color.BLACK); // Add black border
+        componentBoundary.setStrokeWidth(1); // Set border thickness to 1 pixel
 
         // Add a number label in the middle of the box
-        Text numberText = new Text(String.valueOf(currentBoxNumber));
-        numberText.setFill(Color.WHITE);
+        Text componentLabel = new Text(String.valueOf(currentBoxNumber));
+        componentLabel.setFill(Color.WHITE);
 
         // Create a StackPane to combine the box and the text
-        StackPane boxPane = new StackPane(componentInstance, numberText);
-        boxPane.setAlignment(Pos.CENTER);
+        StackPane componentPane = new StackPane(componentBoundary, componentLabel);
+        componentPane.setAlignment(Pos.CENTER);
 
         // Add click event to display box number
-        boxPane.setOnMouseClicked(event -> showBoxNumberDialog(currentBoxNumber));
+        componentPane.setOnMouseClicked(event -> showBoxNumberDialog(currentBoxNumber));
 
         // Create a VBox to stack the box and the arrow
-        VBox boxWithArrow = new VBox();
-        boxWithArrow.setAlignment(Pos.TOP_CENTER); // Center alignment
-        boxWithArrow.setSpacing(0); // Remove any spacing
+        VBox componentInstance = new VBox();
+        componentInstance.setAlignment(Pos.TOP_CENTER); // Center alignment
+        componentInstance.setSpacing(0); // Remove any spacing
 
         // Add the box and the arrow to the VBox
-        boxWithArrow.getChildren().addAll(
-                boxPane, // Box with centered number
+        componentInstance.getChildren().addAll(
+                componentPane, // Box with centered number
                 createArrow() // Arrow below the box
         );
 
-        return boxWithArrow;
+        /**
+         * Set extra data against component instance with setUserData (passing in the bespoke type).
+         */
+//        componentInstance.setUserData(null);
+
+        return componentInstance;
     }
 
     private StackPane createArrow() {
