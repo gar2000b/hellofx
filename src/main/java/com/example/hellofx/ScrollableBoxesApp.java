@@ -35,16 +35,34 @@ public class ScrollableBoxesApp extends Application {
     private static final String BEGIN_COMPONENT = "Begin Component";
     private static final String END_COMPONENT = "End Component";
     private static final String EVOLUTIONARY_SEARCH_COMPONENT = "Evolutionary Search Component";
+    private static final String DATA_LOAD_COMPONENT = "Data Load Component";
+    private static final String GENERIC_WRAPPER_COMPONENT = "Generic Wrapper Component";
+    private static final String SIGNALS_WRAPPER_COMPONENT = "Signals Wrapper Component";
+    private static final String SIGNAL_GENERATION_COMPONENT = "Signal Generation Component";
+    private static final String STANDARD_COMPONENT = "Standard Component";
+    private static final String CODE_BLOCK_COMPONENT = "Code Block Component";
 
     private static final Set<String> VALID_COMPONENTS = Set.of(
-    BEGIN_COMPONENT,
-    END_COMPONENT,
-    EVOLUTIONARY_SEARCH_COMPONENT
-    );
+            BEGIN_COMPONENT,
+            END_COMPONENT,
+            DATA_LOAD_COMPONENT,
+            GENERIC_WRAPPER_COMPONENT,
+            SIGNALS_WRAPPER_COMPONENT,
+            SIGNAL_GENERATION_COMPONENT,
+            STANDARD_COMPONENT,
+            CODE_BLOCK_COMPONENT,
+            EVOLUTIONARY_SEARCH_COMPONENT
+            );
 
     private static final Color DEFAULT_COMPONENT_COLOUR = Color.web("#4A90E2");
     private static final Color BEGIN_COMPONENT_COLOUR = Color.web("#A9A9A9");
     private static final Color END_COMPONENT_COLOUR = Color.web("#808080");
+    private static final Color DATA_LOAD_COMPONENT_COLOUR = Color.web("#8BC34A");
+    private static final Color GENERIC_WRAPPER_COMPONENT_COLOUR = Color.web("#FF9800");
+    private static final Color SIGNALS_WRAPPER_COMPONENT_COLOUR = Color.web("#4A90E2");
+    private static final Color SIGNAL_GENERATION_COMPONENT_COLOUR = Color.web("#5AA7FF");
+    private static final Color STANDARD_COMPONENT_COLOUR = Color.web("#1ABC9C");
+    private static final Color CODE_BLOCK_COMPONENT_COLOUR = Color.web("#9B59B6");
     private static final Color EVOLUTIONARY_SEARCH_COMPONENT_COLOUR = Color.web("#F44336");
 
     @Override
@@ -230,6 +248,27 @@ public class ScrollableBoxesApp extends Application {
         Tooltip.install(signalGenerationComponentBoxPane1, signalGenerationComponentToolTip);
         signalGenerationComponentToolTip.setShowDelay(Duration.millis(100));
 
+        signalGenerationComponentBoxPane1.setOnMousePressed(event -> {
+            signalGenerationComponentBoxPane1.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        signalGenerationComponentBoxPane1.setOnMouseReleased(event -> {
+            signalGenerationComponentBoxPane1.setStyle(""); // Reset the border
+        });
+
+        signalGenerationComponentBoxPane1.setOnDragDetected(event -> {
+            var db = signalGenerationComponentBoxPane1.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(SIGNAL_GENERATION_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        signalGenerationComponentBoxPane1.setOnDragDone(event -> {
+            signalGenerationComponentBoxPane1.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
+
         // Create a Signal Generation Component box
         Rectangle signalGenerationComponentBox2 = new Rectangle(150, 50, Color.web("#5AA7FF"));
         signalGenerationComponentBox2.setArcWidth(10); // Rounded corners
@@ -247,6 +286,27 @@ public class ScrollableBoxesApp extends Application {
 
         Tooltip.install(signalGenerationComponentBoxPane2, signalGenerationComponentToolTip);
         signalGenerationComponentToolTip.setShowDelay(Duration.millis(100));
+
+        signalGenerationComponentBoxPane2.setOnMousePressed(event -> {
+            signalGenerationComponentBoxPane2.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        signalGenerationComponentBoxPane2.setOnMouseReleased(event -> {
+            signalGenerationComponentBoxPane2.setStyle(""); // Reset the border
+        });
+
+        signalGenerationComponentBoxPane2.setOnDragDetected(event -> {
+            var db = signalGenerationComponentBoxPane2.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(SIGNAL_GENERATION_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        signalGenerationComponentBoxPane2.setOnDragDone(event -> {
+            signalGenerationComponentBoxPane2.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
 
         // Create a Standard Component box
         Rectangle standardComponentBox = new Rectangle(150, 50, Color.web("#1ABC9C"));
@@ -267,6 +327,27 @@ public class ScrollableBoxesApp extends Application {
         Tooltip.install(standardComponentBoxPane, standardComponentToolTip);
         standardComponentToolTip.setShowDelay(Duration.millis(100));
 
+        standardComponentBoxPane.setOnMousePressed(event -> {
+            standardComponentBoxPane.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        standardComponentBoxPane.setOnMouseReleased(event -> {
+            standardComponentBoxPane.setStyle(""); // Reset the border
+        });
+
+        standardComponentBoxPane.setOnDragDetected(event -> {
+            var db = standardComponentBoxPane.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(STANDARD_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        standardComponentBoxPane.setOnDragDone(event -> {
+            standardComponentBoxPane.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
+
         // Create a Code Block Component box
         Rectangle codeBlockComponentBox = new Rectangle(150, 50, Color.web("#9B59B6"));
         codeBlockComponentBox.setArcWidth(10); // Rounded corners
@@ -285,6 +366,27 @@ public class ScrollableBoxesApp extends Application {
         Tooltip codeBlockComponentToolTip = new Tooltip("Code Block Component");
         Tooltip.install(codeBlockComponentBoxPane, codeBlockComponentToolTip);
         codeBlockComponentToolTip.setShowDelay(Duration.millis(100));
+
+        codeBlockComponentBoxPane.setOnMousePressed(event -> {
+            codeBlockComponentBoxPane.setStyle("-fx-border-color: orange; -fx-border-width: 3;");
+        });
+
+        codeBlockComponentBoxPane.setOnMouseReleased(event -> {
+            codeBlockComponentBoxPane.setStyle(""); // Reset the border
+        });
+
+        codeBlockComponentBoxPane.setOnDragDetected(event -> {
+            var db = codeBlockComponentBoxPane.startDragAndDrop(TransferMode.COPY);
+            var content = new javafx.scene.input.ClipboardContent();
+            content.putString(CODE_BLOCK_COMPONENT);
+            db.setContent(content);
+            event.consume();
+        });
+
+        codeBlockComponentBoxPane.setOnDragDone(event -> {
+            codeBlockComponentBoxPane.setStyle(""); // Ensure border is reset
+            event.consume();
+        });
 
         // Create a Genetic Algorithm Component box
         Rectangle geneticAlgorithmComponentBox = new Rectangle(150, 50, Color.web("#F44336"));
@@ -499,6 +601,15 @@ public class ScrollableBoxesApp extends Application {
         }
         if (componentType.equals(END_COMPONENT)) {
             componentInstance = new Rectangle(200, 70, END_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(SIGNAL_GENERATION_COMPONENT)) {
+            componentInstance = new Rectangle(500, 150, SIGNAL_GENERATION_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(STANDARD_COMPONENT)) {
+            componentInstance = new Rectangle(500, 150, STANDARD_COMPONENT_COLOUR); // Wider fixed size
+        }
+        if (componentType.equals(CODE_BLOCK_COMPONENT)) {
+            componentInstance = new Rectangle(500, 150, CODE_BLOCK_COMPONENT_COLOUR); // Wider fixed size
         }
         if (componentType.equals(EVOLUTIONARY_SEARCH_COMPONENT)) {
             componentInstance = new Rectangle(500, 150, EVOLUTIONARY_SEARCH_COMPONENT_COLOUR); // Wider fixed size
